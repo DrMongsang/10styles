@@ -187,8 +187,8 @@ const questions = [
       app.innerHTML = `
         <div class="max-w-xl text-center">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-4xl font-bold mb-4 text-black tracking-tight">10matrix<br><span class="text-2xl font-light">スタイルブック診断</span></h1>
-            <p class="text-lg mb-8 text-gray-700 font-light">あなたのライフスタイルに<br>フィットするスタイルを見つけよう</p>
+            <h1 class="text-4xl font-bold mb-4 text-black tracking-tight japanese-text">10matrix<br><span class="text-2xl font-light">スタイルブック診断</span></h1>
+            <p class="text-lg mb-8 text-gray-700 font-light japanese-text break-words">あなたのライフスタイルに<br>フィットするスタイルを見つけよう</p>
             <div class="space-y-4">
               <button onclick="renderQuestion()" class="w-full px-8 py-4 fabric-button text-white text-xl rounded-xl font-medium"><i class="fas fa-play mr-2"></i>診断を開始する</button>
               <button onclick="showHistory()" class="w-full px-8 py-4 bg-gray-100 text-black text-lg rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"><i class="fas fa-history mr-2"></i>診断履歴を見る</button>
@@ -212,11 +212,11 @@ const questions = [
               <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
                 <div class="bg-black h-2 rounded-full transition-all duration-500" style="width: ${((current + 1) / questions.length) * 100}%"></div>
               </div>
-              <h1 class="text-2xl font-semibold mb-6 text-black tracking-tight">${q.q}</h1>
+              <h1 class="text-2xl font-semibold mb-6 text-black tracking-tight japanese-text break-words">${q.q}</h1>
             </div>
             <div class="space-y-3">
               ${q.options.map((opt) => `
-                <button onclick="selectAnswer('${opt.score}', '${opt.text}')" class="block w-full text-left border border-gray-200 rounded-xl px-6 py-4 hover:border-black hover:bg-gray-50 transition-all duration-300 text-black font-medium">${opt.text}</button>
+                <button onclick="selectAnswer('${opt.score}', '${opt.text}')" class="block w-full text-left border border-gray-200 rounded-xl px-6 py-4 hover:border-black hover:bg-gray-50 transition-all duration-300 text-black font-medium japanese-text break-words">${opt.text}</button>
               `).join('')}
             </div>
           </div>
@@ -264,12 +264,12 @@ const questions = [
       app.innerHTML = `
         <div class="max-w-xl text-center">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-3xl font-bold mb-4 text-black tracking-tight">あなたは<br>「${resultType}」タイプ！</h1>
+            <h1 class="text-3xl font-bold mb-4 text-black tracking-tight japanese-text break-words">あなたは<br>「${resultType}」タイプ！</h1>
             <img src="${imageUrl}" alt="${resultType}" class="mx-auto mb-6 rounded-xl shadow-lg max-w-full h-auto" />
-            <p class="text-lg mb-6 text-gray-700 font-light leading-relaxed">${description}</p>
-            ${scene ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-black"><h2 class="font-semibold text-lg mb-2 text-black">着用シーン</h2><p class="text-gray-600">${scene}</p></div>` : ''}
-            ${challenge ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-gray-400"><h2 class="font-semibold text-lg mb-2 text-black">課題</h2><p class="text-gray-600">${challenge}</p></div>` : ''}
-            ${benefit ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-green-500"><h2 class="font-semibold text-lg mb-2 text-black">便益</h2><p class="text-gray-600">${benefit}</p></div>` : ''}
+            <p class="text-lg mb-6 text-gray-700 font-light leading-relaxed japanese-text break-words">${description}</p>
+            ${scene ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-black"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">着用シーン</h2><p class="text-gray-600 japanese-text break-words">${scene}</p></div>` : ''}
+            ${challenge ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-gray-400"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">課題</h2><p class="text-gray-600 japanese-text break-words">${challenge}</p></div>` : ''}
+            ${benefit ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-green-500"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">便益</h2><p class="text-gray-600 japanese-text break-words">${benefit}</p></div>` : ''}
             <div class="mt-8 space-y-3">
               ${buttonsHtml}
               <button onclick="location.reload()" class="px-6 py-3 bg-gray-100 text-black text-sm rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"><i class="fas fa-redo mr-2"></i>もう一度診断する</button>
@@ -336,16 +336,16 @@ const questions = [
       
       const historyHtml = savedResults.map((result, index) => `
         <div class="fabric-card border border-gray-300 rounded-lg p-4 mb-4">
-          <h3 class="font-bold text-lg text-black">${result.type}</h3>
+          <h3 class="font-bold text-lg text-black japanese-text">${result.type}</h3>
           <p class="text-sm text-gray-600">${result.timestamp}</p>
-          <p class="mt-2 text-gray-700">${result.description}</p>
+          <p class="mt-2 text-gray-700 japanese-text break-words">${result.description}</p>
         </div>
       `).join('');
       
       app.innerHTML = `
         <div class="max-w-xl w-full">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-3xl font-bold mb-6 text-center text-black">診断履歴</h1>
+            <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text">診断履歴</h1>
             <div class="max-h-96 overflow-y-auto">
               ${historyHtml}
             </div>
@@ -407,7 +407,7 @@ const questions = [
        app.innerHTML = `
          <div class="max-w-xl w-full">
            <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-             <h1 class="text-3xl font-bold mb-6 text-center text-black">「${resultType}」の詳細情報</h1>
+             <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text break-words">「${resultType}」の詳細情報</h1>
              <div class="mb-6">
                ${linksHtml}
              </div>
@@ -449,12 +449,12 @@ const questions = [
        app.innerHTML = `
          <div class="max-w-xl text-center">
            <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-             <h1 class="text-3xl font-bold mb-4 text-black tracking-tight">あなたは<br>「${resultType}」タイプ！</h1>
+             <h1 class="text-3xl font-bold mb-4 text-black tracking-tight japanese-text break-words">あなたは<br>「${resultType}」タイプ！</h1>
              <img src="${imageUrl}" alt="${resultType}" class="mx-auto mb-6 rounded-xl shadow-lg max-w-full h-auto" />
-             <p class="text-lg mb-6 text-gray-700 font-light leading-relaxed">${description}</p>
-             ${scene ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-black"><h2 class="font-semibold text-lg mb-2 text-black">着用シーン</h2><p class="text-gray-600">${scene}</p></div>` : ''}
-             ${challenge ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-gray-400"><h2 class="font-semibold text-lg mb-2 text-black">課題</h2><p class="text-gray-600">${challenge}</p></div>` : ''}
-             ${benefit ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-green-500"><h2 class="font-semibold text-lg mb-2 text-black">便益</h2><p class="text-gray-600">${benefit}</p></div>` : ''}
+             <p class="text-lg mb-6 text-gray-700 font-light leading-relaxed japanese-text break-words">${description}</p>
+             ${scene ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-black"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">着用シーン</h2><p class="text-gray-600 japanese-text break-words">${scene}</p></div>` : ''}
+             ${challenge ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-gray-400"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">課題</h2><p class="text-gray-600 japanese-text break-words">${challenge}</p></div>` : ''}
+             ${benefit ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-green-500"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">便益</h2><p class="text-gray-600 japanese-text break-words">${benefit}</p></div>` : ''}
              <div class="mt-8 space-y-3">
                ${buttonsHtml}
                <button onclick="location.reload()" class="px-6 py-3 bg-gray-100 text-black text-sm rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"><i class="fas fa-redo mr-2"></i>もう一度診断する</button>
@@ -481,7 +481,7 @@ const questions = [
        app.innerHTML = `
          <div class="max-w-xl w-full">
            <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-             <h1 class="text-3xl font-bold mb-6 text-center text-black">「${resultType}」<br>${category}アイテム</h1>
+             <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text break-words">「${resultType}」<br>${category}アイテム</h1>
              <div class="mb-6">
                ${linksHtml}
              </div>

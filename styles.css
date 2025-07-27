@@ -56,3 +56,71 @@ body {
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
 }
+
+/* モバイル向けレスポンシブデザイン */
+@media (max-width: 768px) {
+  /* テキストの改行とスペーシング最適化 */
+  .text-lg {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  .text-xl {
+    font-size: 1.125rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem !important;
+    line-height: 1.6 !important;
+  }
+  
+  .text-3xl {
+    font-size: 1.5rem !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* パディングとマージンの調整 */
+  .p-8 {
+    padding: 1.5rem !important;
+  }
+  
+  .p-6 {
+    padding: 1rem !important;
+  }
+  
+  .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .py-3 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  /* ボタンのサイズ調整 */
+  .product-link-button {
+    font-size: 0.875rem !important;
+    padding: 0.75rem 1rem !important;
+    line-height: 1.4 !important;
+  }
+  
+  /* テキストの自然な改行 */
+  .leading-relaxed {
+    line-height: 1.7 !important;
+  }
+  
+  /* 長いテキストの処理 */
+  .break-words {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* 日本語テキストの改行最適化 */
+  .japanese-text {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-height: 1.8;
+  }
+}
