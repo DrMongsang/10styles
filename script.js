@@ -185,13 +185,25 @@ const questions = [
 
     function renderTitleScreen() {
       app.innerHTML = `
-        <div class="max-w-xl text-center">
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        <div class="max-w-xl text-center title-content">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-4xl font-bold mb-4 text-black tracking-tight japanese-text">10matrix<br><span class="text-2xl font-light">スタイルブック診断</span></h1>
-            <p class="text-lg mb-8 text-gray-700 font-light japanese-text break-words">あなたのライフスタイルに<br>フィットするスタイルを見つけよう</p>
+            <h1 class="text-4xl font-bold mb-4 text-black tracking-tight japanese-text title-fade-in">10matrix<br><span class="text-2xl font-light">スタイルブック診断</span></h1>
+            <p class="text-lg mb-8 text-gray-700 font-light japanese-text break-words subtitle-fade-in">あなたのライフスタイルに<br>フィットするスタイルを見つけよう</p>
             <div class="space-y-4">
-              <button onclick="renderQuestion()" class="w-full px-8 py-4 fabric-button text-white text-xl rounded-xl font-medium"><i class="fas fa-play mr-2"></i>診断を開始する</button>
-              <button onclick="showHistory()" class="w-full px-8 py-4 bg-gray-100 text-black text-lg rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"><i class="fas fa-history mr-2"></i>診断履歴を見る</button>
+              <button onclick="renderQuestion()" class="w-full px-8 py-4 fabric-button text-white text-xl rounded-xl font-medium button-fade-in"><i class="fas fa-play mr-2"></i>診断を開始する</button>
+              <button onclick="showHistory()" class="w-full px-8 py-4 bg-gray-100 text-black text-lg rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium button-fade-in"><i class="fas fa-history mr-2"></i>診断履歴を見る</button>
             </div>
             <div class="mt-12 text-xs text-gray-400 space-y-1 font-light">
               <p>Developer: FUJIMO GAMES</p>
@@ -205,7 +217,7 @@ const questions = [
     function renderQuestion() {
       const q = questions[current];
       app.innerHTML = `
-        <div class="max-w-xl w-full">
+        <div class="max-w-xl w-full question-slide-in">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
             <div class="text-center mb-8">
               <div class="text-sm text-gray-500 font-medium mb-2">QUESTION ${current + 1} / ${questions.length}</div>
@@ -262,7 +274,7 @@ const questions = [
       }
       
       app.innerHTML = `
-        <div class="max-w-xl text-center">
+        <div class="max-w-xl text-center result-reveal">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
             <h1 class="text-3xl font-bold mb-4 text-black tracking-tight japanese-text break-words">あなたは<br>「${resultType}」タイプ！</h1>
             <img src="${imageUrl}" alt="${resultType}" class="mx-auto mb-6 rounded-xl shadow-lg max-w-full h-auto" />
@@ -343,7 +355,7 @@ const questions = [
       `).join('');
       
       app.innerHTML = `
-        <div class="max-w-xl w-full">
+        <div class="max-w-xl w-full page-fade-in">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
             <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text">診断履歴</h1>
             <div class="max-h-96 overflow-y-auto">
@@ -405,7 +417,7 @@ const questions = [
        });
        
        app.innerHTML = `
-         <div class="max-w-xl w-full">
+         <div class="max-w-xl w-full page-fade-in page-transition">
            <div class="fabric-card rounded-2xl p-8 fabric-shadow">
              <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text break-words">「${resultType}」の詳細情報</h1>
              <div class="mb-6">
@@ -479,7 +491,7 @@ const questions = [
        });
        
        app.innerHTML = `
-         <div class="max-w-xl w-full">
+         <div class="max-w-xl w-full page-fade-in">
            <div class="fabric-card rounded-2xl p-8 fabric-shadow">
              <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text break-words">「${resultType}」<br>${category}アイテム</h1>
              <div class="mb-6">
