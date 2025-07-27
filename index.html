@@ -6,13 +6,43 @@
   <title>10matrixスタイルブック診断</title>
   <script defer src="script.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+    
     body {
-      font-family: 'Noto Sans JP', sans-serif;
+      font-family: 'Inter', 'Noto Sans JP', sans-serif;
+      letter-spacing: -0.01em;
+    }
+    
+    .fabric-gradient {
+      background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    }
+    
+    .fabric-shadow {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fabric-button {
+      background: linear-gradient(135deg, #000000 0%, #333333 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .fabric-button:hover {
+      background: linear-gradient(135deg, #333333 0%, #000000 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .fabric-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
-<body class="bg-white text-gray-800">
+<body class="fabric-gradient text-white">
   <div id="app" class="min-h-screen flex items-center justify-center p-6">
     <!-- 診断コンテンツはJSで生成 -->
   </div>
