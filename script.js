@@ -1,42 +1,57 @@
-const questions = [
+const styleOptions = [
+      { id: 1, name: "晴れの日スーツ", image: "style01.png" },
+      { id: 2, name: "3ピーススーツ", image: "style02.png" },
+      { id: 3, name: "2ピーススーツ（パッドあり）", image: "style03.png" },
+      { id: 4, name: "セットアップ（パッド無し）", image: "style04.png" },
+      { id: 5, name: "セットアップ（ジャージー生地）", image: "style05.png" },
+      { id: 6, name: "ジャケパン（初級）", image: "style06.png" },
+      { id: 7, name: "ジャケパン（上級）", image: "style07.png" },
+      { id: 8, name: "セットアップ（インナー自由）", image: "style08.png" },
+      { id: 9, name: "シャツパンツ（着イン）", image: "style09.png" },
+      { id: 10, name: "シャツパンツ（着アウト）", image: "style10.png" }
+    ];
+
+    const questions = [
       {
-        q: "服、なに重視？",
-        options: [
-          { text: "見た目", score: "キメラクさん" },
-          { text: "ラクさ", score: "ゆるカジさん" },
-          { text: "ちょうどよさ", score: "バランスさん" }
-        ]
+        id: 1,
+        type: "image_select",
+        q: "あなたの普段の服装に最も近いものは？",
+        options: styleOptions
       },
       {
-        q: "職場の雰囲気は？",
-        options: [
-          { text: "カチッと", score: "キメラクさん" },
-          { text: "ゆるめ", score: "毎ラクさん" },
-          { text: "自由", score: "ジャケはじさん" }
-        ]
+        id: 2,
+        type: "image_select",
+        q: "あなたの周囲（職場・環境）で多い服装は？",
+        options: styleOptions
       },
       {
-        q: "気になるのは？",
+        id: 3,
+        type: "text_select",
+        q: "今回探している目的アイテムは？",
         options: [
-          { text: "信頼感", score: "キメラクさん" },
-          { text: "清潔感", score: "着こなしさん" },
-          { text: "ラフすぎ注意", score: "バランスさん" }
-        ]
+          { text: "スーツ", value: "suit" },
+          { text: "ジャケット", value: "jacket" },
+          { text: "セットアップ", value: "setup" },
+          { text: "シャツ", value: "shirt" },
+          { text: "パンツ", value: "pants" }
+        ],
+        conditionalOptions: {
+          "晴れの日スーツ": [
+            { text: "3ピーススーツ", value: "three_piece", image: "3piece.svg", url: "https://fabric-tokyo.com/products/list/three_piece_suit?scene=10&sortType=recommend" },
+            { text: "セットアップ", value: "setup", image: "co-ord-set.svg", url: "https://fabric-tokyo.com/products/list/co_ord_set?scene=10&sortType=recommend" },
+            { text: "2ピーススーツ", value: "two_piece", image: "2piece_suit.svg", url: "https://fabric-tokyo.com/products/list/two_piece_suit?scene=10&sortType=recommend" },
+            { text: "フォーマルシャツ", value: "formal_shirt", image: "formal_shirts.svg", url: "https://fabric-tokyo.com/products/list/formal_shirts?scene=10&scene=11&sortType=recommend" }
+          ]
+        }
       },
       {
-        q: "洗濯は？",
+        id: 4,
+        type: "image_select",
+        q: "そのアイテムの主な用途は？",
         options: [
-          { text: "気にしない", score: "ジャケはじさん" },
-          { text: "家で洗いたい", score: "ゆるカジさん" },
-          { text: "自信なし", score: "毎ラクさん" }
-        ]
-      },
-      {
-        q: "スーツ、どう思う？",
-        options: [
-          { text: "似合わない", score: "バランスさん" },
-          { text: "嫌だけど必要", score: "着こなしさん" },
-          { text: "意外と好き", score: "キメラクさん" }
+          { id: 1, name: "結婚式・パーティー専用", image: "結婚式・パーティー専用.webp" },
+          { id: 2, name: "ビジネス兼用", image: "ビジネス兼用.webp" },
+          { id: 3, name: "カジュアル・プライベート兼用", image: "カジュアル・プライベート兼用.webp" }
         ]
       }
     ];
@@ -178,8 +193,8 @@ const questions = [
       }
     };
 
-    let current = 0;
-    let scores = {};
+    let currentQuestion = 0;
+    let userAnswers = [];
 
     const app = document.getElementById("app");
 
@@ -215,76 +230,276 @@ const questions = [
     }
 
     function renderQuestion() {
-      const q = questions[current];
+      if (currentQuestion >= questions.length) {
+        showResult();
+        return;
+      }
+
+      const q = questions[currentQuestion];
+      
+      let optionsHtml = '';
+      if (q.type === 'image_select') {
+         // 質問4（用途選択）の場合は3列グリッドを使用
+         const gridClass = q.id === 4 ? 'grid grid-cols-3 gap-4' : 'image-grid';
+         optionsHtml = `
+           <div class="touch-instruction mb-4 text-center">
+             <p class="text-sm text-gray-600">👆 画像をタッチして選択してください</p>
+           </div>
+           <div class="${gridClass} mb-6">
+             ${q.options.map((option, index) => `
+               <button onclick="selectAnswer(${option.id}, '${option.name}')" class="card-style-btn">
+                 <img src="images/${option.image}" alt="${option.name}">
+                 ${q.id === 4 ? `<div class="mt-2 text-sm font-medium text-center text-gray-800">${option.name}</div>` : ''}
+               </button>
+             `).join('')}
+           </div>
+         `;
+      } else {
+        // 質問3で「晴れの日スーツ」が選択されている場合の条件分岐
+        if (q.id === 3 && q.conditionalOptions && userAnswers[0] && userAnswers[0].text === "晴れの日スーツ") {
+          const conditionalOpts = q.conditionalOptions["晴れの日スーツ"];
+          optionsHtml = `
+            <div class="touch-instruction mb-4 text-center">
+              <p class="text-sm text-gray-600">👆 画像をタッチして選択してください</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              ${conditionalOpts.map((option, index) => `
+                <button onclick="selectAnswerWithUrl('${option.value}', '${option.text}', '${option.url}')" class="card-style-btn">
+                  <img src="images/${option.image}" alt="${option.text}">
+                  <div class="mt-2 text-sm font-medium text-center">${option.text}</div>
+                </button>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          optionsHtml = `
+            <div class="space-y-3">
+              ${q.options.map((option, index) => `
+                <button onclick="selectAnswer('${option.value}', '${option.text}')" class="w-full p-4 text-left border-2 border-gray-200 rounded-xl hover:border-black hover:bg-gray-50 transition-all duration-200 japanese-text break-words">
+                  ${option.text}
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+      }
+
       app.innerHTML = `
-        <div class="max-w-xl w-full question-slide-in">
+        <div class="max-w-4xl w-full question-slide-in">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
             <div class="text-center mb-8">
-              <div class="text-sm text-gray-500 font-medium mb-2">QUESTION ${current + 1} / ${questions.length}</div>
-              <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
-                <div class="bg-black h-2 rounded-full transition-all duration-500" style="width: ${((current + 1) / questions.length) * 100}%"></div>
+              <div class="text-sm text-gray-500 mb-2">質問 ${currentQuestion + 1} / ${questions.length}</div>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+                <div class="bg-black h-2 rounded-full transition-all duration-300" style="width: ${((currentQuestion + 1) / questions.length) * 100}%"></div>
               </div>
-              <h1 class="text-2xl font-semibold mb-6 text-black tracking-tight japanese-text break-words">${q.q}</h1>
+              <h2 class="text-2xl font-bold ${currentQuestion === 2 ? 'text-gray-700' : 'text-black'} japanese-text">${q.q}</h2>
             </div>
-            <div class="space-y-3">
-              ${q.options.map((opt) => `
-                <button onclick="selectAnswer('${opt.score}', '${opt.text}')" class="block w-full text-left border border-gray-200 rounded-xl px-6 py-4 hover:border-black hover:bg-gray-50 transition-all duration-300 text-black font-medium japanese-text break-words">${opt.text}</button>
-              `).join('')}
+            ${optionsHtml}
+            <div class="mt-6 text-center">
+              <button onclick="restart()" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">最初に戻る</button>
             </div>
           </div>
         </div>
       `;
     }
 
-    function selectAnswer(type, text) {
-      scores[type] = (scores[type] || 0) + 1;
-      current++;
-      if (current < questions.length) {
+    function selectAnswer(value, text) {
+      userAnswers[currentQuestion] = { value, text };
+      currentQuestion++;
+      renderQuestion();
+    }
+
+    function selectAnswerWithUrl(value, text, url) {
+      userAnswers[currentQuestion] = { value, text, url };
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
         renderQuestion();
       } else {
         showResult();
       }
     }
 
-    function showResult() {
-      const resultType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
-      const description = results[resultType].description;
-      const scene = results[resultType].scene;
-      const challenge = results[resultType].challenge;
-      const benefit = results[resultType].benefit;
-      const imageUrl = `images/${resultType}.png`; // 画像のパスを生成
+    function showSpecialResult() {
+      const selectedItem = userAnswers[2]; // 質問3の回答
+      const selectedPurpose = userAnswers[3]; // 質問4の回答（用途）
       
-      // ボタンの生成
-      let buttonsHtml = '';
-      const result = results[resultType];
+      // アイテムと用途に基づく詳細情報
+      const itemDetails = {
+        'three_piece': {
+          title: '3ピーススーツ',
+          description: '格式高い場面に最適な、伝統的なフォーマルスタイル。ベストが加わることで、より洗練された印象を演出します。',
+          features: ['最高級のフォーマル感', 'ベスト付きで体型カバー', '重要な場面での信頼感'],
+          links: {
+            '結婚式・パーティー専用': [
+              { name: '3ピーススーツを見る', url: 'https://fabric-tokyo.com/products/list/three_piece_suit?scene=10&scene=11&sortType=recommend' }
+            ],
+            'default': [
+              { name: '3ピーススーツを見る', url: 'https://fabric-tokyo.com/products/list/three_piece_suit?scene=10&sortType=recommend' }
+            ]
+          }
+        },
+        'two_piece': {
+          title: '2ピーススーツ',
+          description: 'ビジネスからフォーマルまで幅広く活用できる、最もスタンダードなスーツスタイル。',
+          features: ['汎用性の高さ', 'スタイリッシュなシルエット', 'ビジネスシーンでの定番'],
+          links: {
+            '結婚式・パーティー専用': [
+              { name: '2ピーススーツを見る', url: 'https://fabric-tokyo.com/products/list/two_piece_suit?scene=10&scene=11&sortType=recommend' }
+            ],
+            'default': [
+              { name: '2ピーススーツを見る', url: 'https://fabric-tokyo.com/products/list/two_piece_suit?scene=10&sortType=recommend' }
+            ]
+          }
+        },
+        'setup': {
+          title: 'セットアップ',
+          description: 'モダンで洗練されたコーディネート。上下セットでありながら、カジュアルダウンも可能な万能アイテム。',
+          features: ['モダンなスタイル', '着回しの自由度', 'トレンド感のあるデザイン'],
+          links: {
+            '結婚式・パーティー専用': [
+              { name: 'セットアップを見る', url: 'https://fabric-tokyo.com/products/list/co-ord-set?price=59800&price=69000&price=79000&price=89000&price=110000&price=132000&price=57000&scene=9&sortType=recommend' }
+            ],
+            'default': [
+              { name: 'セットアップを見る', url: 'https://fabric-tokyo.com/products/list/co-ord-set?price[]=57000&price[]=59800&price[]=69000&price[]=79000&price[]=89000&price[]=110000&price[]=132000&scene=9&sortType=recommend' }
+            ]
+          }
+        },
+        'formal_shirt': {
+          title: 'フォーマルシャツ',
+          description: 'フォーマルな場面に欠かせない、上質なドレスシャツ。細部にこだわった仕立てで品格を演出。',
+          features: ['上質な素材感', '細部へのこだわり', 'フォーマルシーンでの必需品'],
+          links: [
+            { name: 'フォーマルシャツを見る', url: 'https://fabric-tokyo.com/products/list/formal_shirts?scene=10&scene=11&sortType=recommend' }
+          ]
+        }
+      };
       
-      if (result.urls) {
-        // 複数URLの場合は通年・シーズンボタンを表示
-        buttonsHtml += `<p class="text-lg font-semibold mb-6 text-black">あなたはどちらをお探しですか？</p>`;
-        Object.keys(result.urls).forEach(category => {
-          const icon = category === '通年' ? 'fas fa-star' : 'fas fa-leaf';
-          buttonsHtml += `<button onclick="showCategoryLinks('${resultType}', '${category}')" class="w-full px-6 py-4 fabric-button text-white rounded-xl font-medium mb-3"><i class="${icon} mr-2"></i>${category}</button>`;
-        });
-      } else if (result.url) {
-        // 単一URLの場合
-        buttonsHtml = `<button onclick="window.open('${result.url}', '_blank')" class="w-full px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 mb-3"><i class="fas fa-shopping-bag mr-2"></i>詳細情報を見る</button>`;
-      } else {
-        // URLがない場合
-        buttonsHtml = `<button onclick="alert('このタイプの詳細情報はまだ準備中です。')" class="w-full px-6 py-3 bg-gray-400 text-white rounded-xl cursor-not-allowed mb-3"><i class="fas fa-clock mr-2"></i>詳細情報（準備中）</button>`;
-      }
+      const purposeDetails = {
+        '結婚式・パーティー専用': {
+          scene: '結婚式・パーティー',
+          recommendation: '特別な日にふさわしい、格式高いスタイルをお選びいただきました。',
+          additionalLinks: [
+            { name: 'アクセサリー・小物', url: 'https://fabric-tokyo.com/products/list/accessories?scene=formal' },
+            { name: 'フォーマルシューズ', url: 'https://fabric-tokyo.com/products/list/shoes?scene=formal' }
+          ]
+        },
+        'ビジネス兼用': {
+          scene: 'ビジネス・フォーマル',
+          recommendation: 'ビジネスシーンでも活用できる、実用性の高いスタイルです。',
+          additionalLinks: [
+            { name: 'ビジネスシャツ', url: 'https://fabric-tokyo.com/products/list/business_shirts' },
+            { name: 'ネクタイ・小物', url: 'https://fabric-tokyo.com/products/list/accessories?scene=business' }
+          ]
+        },
+        'カジュアル・プライベート兼用': {
+          scene: 'カジュアル・プライベート',
+          recommendation: 'プライベートでも楽しめる、着回しの利くスタイルです。',
+          additionalLinks: [
+            { name: 'カジュアルシャツ', url: 'https://fabric-tokyo.com/products/list/casual_shirts' },
+            { name: 'カジュアル小物', url: 'https://fabric-tokyo.com/products/list/accessories?scene=casual' }
+          ]
+        }
+      };
+      
+      const currentItem = itemDetails[selectedItem.value] || itemDetails['two_piece'];
+      const currentPurpose = purposeDetails[selectedPurpose.text] || purposeDetails['ビジネス兼用'];
+      
+      // 用途に応じたリンクを選択
+      const selectedLinks = currentItem.links[selectedPurpose.text] || currentItem.links['default'] || [];
       
       app.innerHTML = `
-        <div class="max-w-xl text-center result-reveal">
+        <div class="max-w-4xl text-center result-reveal">
           <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-3xl font-bold mb-4 text-black tracking-tight japanese-text break-words">あなたは<br>「${resultType}」タイプ！</h1>
-            <img src="${imageUrl}" alt="${resultType}" class="mx-auto mb-6 rounded-xl shadow-lg max-w-full h-auto" />
-            <p class="text-lg mb-6 text-gray-700 font-light leading-relaxed japanese-text break-words">${description}</p>
-            ${scene ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-black"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">着用シーン</h2><p class="text-gray-600 japanese-text break-words">${scene}</p></div>` : ''}
-            ${challenge ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-gray-400"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">課題</h2><p class="text-gray-600 japanese-text break-words">${challenge}</p></div>` : ''}
-            ${benefit ? `<div class="text-left p-5 bg-gray-50 rounded-xl mb-4 border-l-4 border-green-500"><h2 class="font-semibold text-lg mb-2 text-black japanese-text">便益</h2><p class="text-gray-600 japanese-text break-words">${benefit}</p></div>` : ''}
-            <div class="mt-8 space-y-3">
-              ${buttonsHtml}
-              <button onclick="location.reload()" class="px-6 py-3 bg-gray-100 text-black text-sm rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium"><i class="fas fa-redo mr-2"></i>もう一度診断する</button>
+            <h1 class="text-3xl font-bold mb-6 text-black tracking-tight japanese-text">あなたの選択結果</h1>
+            
+            <div class="mb-8">
+              <img src="images/${selectedItem.value === 'three_piece' ? '3piece.svg' : selectedItem.value === 'two_piece' ? '2piece_suit.svg' : selectedItem.value === 'formal_shirt' ? 'formal_shirts.svg' : 'co-ord-set.svg'}" alt="${selectedItem.text}" class="mx-auto mb-6 rounded-xl shadow-lg max-w-full h-auto" style="max-height: 250px;" />
+              
+              <div class="text-left space-y-6">
+                <div class="bg-gray-50 rounded-xl p-6">
+                  <h2 class="text-xl font-bold mb-3 text-black japanese-text">${currentItem.title}</h2>
+                  <p class="text-gray-700 mb-4 leading-relaxed japanese-text">${currentItem.description}</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500">
+                  <h3 class="font-bold text-lg mb-2 text-blue-800 japanese-text">着用シーン</h3>
+                  <p class="text-blue-700 mb-2 japanese-text">${currentPurpose.scene}</p>
+                  <p class="text-blue-600 text-sm japanese-text">${currentPurpose.recommendation}</p>
+                </div>
+                
+                <div class="bg-green-50 rounded-xl p-6 border-l-4 border-green-500">
+                  <h3 class="font-bold text-lg mb-4 text-green-800 japanese-text">おすすめ商品</h3>
+                  <button onclick="window.open('${selectedLinks[0].url}', '_blank')" class="w-full px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 text-lg font-medium">
+                    <i class="fas fa-external-link-alt mr-2"></i>${selectedLinks[0].name}
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <button onclick="restart()" class="w-full px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium">
+                <i class="fas fa-redo mr-2"></i>もう一度診断する
+              </button>
+              
+              <button onclick="restart()" class="w-full px-6 py-3 bg-gray-100 text-black rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium">
+                <i class="fas fa-home mr-2"></i>最初に戻る
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showResult() {
+      // 「晴れの日スーツ」選択時は専用の結果画面を表示
+      if (userAnswers[0] && userAnswers[0].text === "晴れの日スーツ") {
+        showSpecialResult();
+        return;
+      }
+      
+      // 回答に基づいて結果を生成
+      const ownStyle = userAnswers[0]?.text || '不明';
+      const surroundingStyle = userAnswers[1]?.text || '不明';
+      const targetItem = userAnswers[2]?.text || '不明';
+      const itemPurpose = userAnswers[3]?.text || '不明';
+
+      app.innerHTML = `
+        <div class="max-w-2xl w-full result-reveal">
+          <div class="fabric-card rounded-2xl p-8 fabric-shadow">
+            <div class="text-center mb-8">
+              <div class="text-sm text-gray-500 mb-4">診断結果</div>
+              <h2 class="text-3xl font-bold text-black mb-6 japanese-text">あなたの診断結果</h2>
+            </div>
+            
+            <div class="space-y-6 mb-8">
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h3 class="font-bold text-lg mb-2 japanese-text">自身の服装</h3>
+                <p class="text-gray-700 japanese-text">${ownStyle}</p>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h3 class="font-bold text-lg mb-2 japanese-text">周囲の服装</h3>
+                <p class="text-gray-700 japanese-text">${surroundingStyle}</p>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h3 class="font-bold text-lg mb-2 japanese-text">目的アイテム</h3>
+                <p class="text-gray-700 japanese-text">${targetItem}</p>
+              </div>
+              <div class="bg-gray-50 rounded-xl p-4">
+                <h3 class="font-bold text-lg mb-2 japanese-text">目的アイテムの用途</h3>
+                <p class="text-gray-700 japanese-text">${itemPurpose}</p>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <button onclick="showHistory()" class="w-full bg-black text-white py-3 px-6 rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium">
+                回答履歴を見る
+              </button>
+              <button onclick="showLinkSelection()" class="w-full border-2 border-black text-black py-3 px-6 rounded-xl hover:bg-black hover:text-white transition-all duration-200 font-medium">
+                商品を見る
+              </button>
+              <button onclick="restart()" class="w-full text-gray-600 py-3 px-6 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                もう一度診断する
+              </button>
             </div>
           </div>
         </div>
@@ -339,31 +554,33 @@ const questions = [
 
     // 履歴表示機能
     function showHistory() {
-      const savedResults = JSON.parse(localStorage.getItem('diagnosisHistory') || '[]');
-      
-      if (savedResults.length === 0) {
-        alert('保存された診断結果がありません。');
-        return;
-      }
-      
-      const historyHtml = savedResults.map((result, index) => `
-        <div class="fabric-card border border-gray-300 rounded-lg p-4 mb-4">
-          <h3 class="font-bold text-lg text-black japanese-text">${result.type}</h3>
-          <p class="text-sm text-gray-600">${result.timestamp}</p>
-          <p class="mt-2 text-gray-700 japanese-text break-words">${result.description}</p>
-        </div>
-      `).join('');
-      
-      app.innerHTML = `
-        <div class="max-w-xl w-full page-fade-in">
-          <div class="fabric-card rounded-2xl p-8 fabric-shadow">
-            <h1 class="text-3xl font-bold mb-6 text-center text-black japanese-text">診断履歴</h1>
-            <div class="max-h-96 overflow-y-auto">
-              ${historyHtml}
+      let historyHtml = '';
+      questions.forEach((question, index) => {
+        const answer = userAnswers[index];
+        if (answer) {
+          historyHtml += `
+            <div class="bg-gray-50 rounded-xl p-4 mb-3">
+              <h3 class="font-bold text-lg mb-2 japanese-text">${question.q}</h3>
+              <p class="text-gray-700 japanese-text">${answer.text}</p>
             </div>
-            <div class="mt-6 space-y-3">
-              <button onclick="clearHistory()" class="w-full px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 font-medium"><i class="fas fa-trash mr-2"></i>履歴をクリア</button>
-              <button onclick="renderTitleScreen()" class="w-full px-6 py-3 fabric-button text-white rounded-xl font-medium"><i class="fas fa-home mr-2"></i>トップに戻る</button>
+          `;
+        }
+      });
+
+      app.innerHTML = `
+        <div class="max-w-2xl w-full page-fade-in">
+          <div class="fabric-card rounded-2xl p-8 fabric-shadow">
+            <div class="text-center mb-8">
+              <h2 class="text-2xl font-bold text-black japanese-text">回答履歴</h2>
+            </div>
+            ${historyHtml}
+            <div class="space-y-4 mt-8">
+              <button onclick="showResult()" class="w-full bg-black text-white py-3 px-6 rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium">
+                結果に戻る
+              </button>
+              <button onclick="restart()" class="w-full text-gray-600 py-3 px-6 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                もう一度診断する
+              </button>
             </div>
           </div>
         </div>
@@ -505,5 +722,11 @@ const questions = [
        `;
      }
 
-    // 初期表示
+    function restart() {
+      currentQuestion = 0;
+      userAnswers = [];
+      renderTitleScreen();
+    }
+
+     // 初期表示
     renderTitleScreen();
